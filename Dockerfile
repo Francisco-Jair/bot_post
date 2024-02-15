@@ -7,10 +7,11 @@ RUN apt-get update && \
 
 COPY . /app
 
-RUN pip3 install moviepy
+RUN pip3 install -r /app/requirements.txt
 
 # Defina o diretório de trabalho padrão
 WORKDIR /app
 
 # Comando padrão para execução
-CMD ["/bin/bash"]
+# CMD ["/bin/bash"]
+CMD ["python3", "main.py"]

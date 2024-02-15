@@ -1,2 +1,4 @@
 venv
 video
+__pycache__
+video_processado

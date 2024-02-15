@@ -1,46 +1,48 @@
-import os
 import time
 
-# import undetected_chromedriver as uc
+import undetected_chromedriver as uc
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+
 
 desired = DesiredCapabilities.CHROME
+
+from botpost import list_all_file_folders, path_abs
 
 # Configurações
 username = "nobug_404"
 password = "NOBUG#20_23"
 email = "nobug404cj@gmail.com"
 password_email = "nobug#2022"
-video_path = "./video/INDICADOR7.mp4"
+video_path = list_all_file_folders("video_processado")
 caption = "Melhor futebol do mundo"
 hashtags = ["#tiktok", "#futebol", "#soccer"]
 
-video_path = os.path.abspath(video_path)  # caminho absoluto do video
+# video_path = os.path.abspath(video_path)  # caminho absoluto do video
 
-# options = uc.ChromeOptions()
-options = Options()
+options = uc.ChromeOptions()
+# options = Options()
 options.add_argument("--disable-notifications")
-# options.add_argument("--disable-extensions")
-# options.add_argument("--disable-popup-blocking")
-# options.add_argument("--profile-directory=Default")
-# options.add_argument("--ignore-certificate-errors")
-# options.add_argument("--disable-plugins-discovery")
-# options.add_argument("--incognito")
-# options.add_argument("user_agent=DN")
-# options.add_argument('--no-sandbox')
+options.add_argument("--disable-extensions")
+options.add_argument("--disable-popup-blocking")
+options.add_argument("--profile-directory=Default")
+options.add_argument("--ignore-certificate-errors")
+options.add_argument("--disable-plugins-discovery")
+options.add_argument("--incognito")
+options.add_argument("--user_agent=DN")
+options.add_argument('--no-sandbox')
 
 service = Service(ChromeDriverManager().install())
 
 # Inicializa o navegador
-driver = webdriver.Chrome(service=service, options=options)
-# driver = uc.Chrome(service=service, options=options, use_subprocess=True, desired_capabilities=desired)
+# driver = webdriver.Chrome(service=service, options=options)
+driver = uc.Chrome(service=service, options=options, use_subprocess=True, desired_capabilities=desired)
 # driver.implicitly_wait(5)
 
 # Maximiza a janela do navegador
@@ -96,29 +98,33 @@ time.sleep(4)
 
 # Continuar daqui, postar o video
 driver.find_element(By.XPATH, '//*[@id="app-header"]/div/div[3]/div[1]/a').click()
-time.sleep(2)
+time.sleep(5)
 
 # selecionando o input do video
-# video_input = driver.find_element(By.CLASS_NAME, 'upload-container')
-# video_input = driver.find_element(By.CSS_SELECTOR, "input[type='file']")
 iframe = driver.find_element(By.TAG_NAME, "iframe")
 driver.switch_to.frame(iframe)
+
+# funcao para portar varias vezes
 video_input = driver.find_element(By.CSS_SELECTOR, "input[type='file']")
-video_input.send_keys(video_path)  # tem que ser o caminho absoluto
+video_input.send_keys(
+    path_abs(f"video_processado/{video_path[1]}")
+)  # tem que ser o caminho absoluto
 
 time.sleep(5)
 
-driver.find_element(
-    By.XPATH,
-    '//*[@id="tux-portal-container"]/div[2]/div/div/div/div/div[2]/div[2]/div[2]/button[2]',
-).click()
-time.sleep(2)
+# driver.find_element(
+#     By.XPATH,
+#     '//*[@id="tux-portal-container"]/div[2]/div/div/div/div/div[2]/div[2]/div[2]/button[2]',
+# ).click()
+# time.sleep(2)
 
 # escrever a legenda
+time.sleep(5)
 driver.find_element(
     By.XPATH,
     '//*[@id="root"]/div/div/div/div[2]/div[2]/div[2]/div[1]/div/div[1]/div[2]/div/div/div/div/div/div',
 ).clear()
+time.sleep(2)
 driver.find_element(
     By.XPATH,
     '//*[@id="root"]/div/div/div/div[2]/div[2]/div[2]/div[1]/div/div[1]/div[2]/div/div/div/div/div/div',
@@ -133,3 +139,21 @@ time.sleep(10)
 print("Video Publicado com sucesso!")
 
 # ele da a opcoes de carregar mais videos, implementar isso
+# ver se a lista de videos e maior que 1
+
+if len(video_path) < 2:
+    driver.quit()
+    print("Saindo....")
+
+
+# driver.find_element(
+#     By.XPATH,
+#     '//*[@id="root"]/div/div/div/div[2]/div[2]/div[2]/div[9]/div/div[2]/div[1]',
+# ).click()
+
+
+# clicar em gerenciar suas publicacoes
+# driver.find_element(
+#     By.XPATH,
+#     '//*[@id="root"]/div/div/div/div[2]/div[2]/div[2]/div[9]/div/div[2]/div[2]',
+# ).click()
