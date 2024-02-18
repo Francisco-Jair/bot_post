@@ -5,11 +5,10 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-
 
 desired = DesiredCapabilities.CHROME
 
@@ -36,13 +35,15 @@ options.add_argument("--ignore-certificate-errors")
 options.add_argument("--disable-plugins-discovery")
 options.add_argument("--incognito")
 options.add_argument("--user_agent=DN")
-options.add_argument('--no-sandbox')
+options.add_argument("--no-sandbox")
 
 service = Service(ChromeDriverManager().install())
 
 # Inicializa o navegador
 # driver = webdriver.Chrome(service=service, options=options)
-driver = uc.Chrome(service=service, options=options, use_subprocess=True, desired_capabilities=desired)
+driver = uc.Chrome(
+    service=service, options=options, use_subprocess=True, desired_capabilities=desired
+)
 # driver.implicitly_wait(5)
 
 # Maximiza a janela do navegador
@@ -145,7 +146,7 @@ if len(video_path) < 2:
     driver.quit()
     print("Saindo....")
 
-
+# carregar outro video
 # driver.find_element(
 #     By.XPATH,
 #     '//*[@id="root"]/div/div/div/div[2]/div[2]/div[2]/div[9]/div/div[2]/div[1]',
