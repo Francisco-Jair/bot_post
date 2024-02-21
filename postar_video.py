@@ -1,8 +1,9 @@
 import time
 
 import undetected_chromedriver as uc
-from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+
+# from selenium import webdriver
+# from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -10,9 +11,10 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from webdriver_manager.chrome import ChromeDriverManager
 
+from botpost import list_all_file_folders, path_abs
+
 desired = DesiredCapabilities.CHROME
 
-from botpost import list_all_file_folders, path_abs
 
 # Configurações
 username = "nobug_404"
@@ -53,27 +55,13 @@ driver.maximize_window()
 # Abre o TikTok
 driver.get("https://www.tiktok.com/")
 
-# time.sleep(2)
-# driver.find_element(By.ID, 'header-login-button').click()
-
 # Espera até que o botão de login apareça
 time.sleep(6)
 login_button = WebDriverWait(driver, 10).until(
     EC.presence_of_element_located((By.ID, "loginContainer"))
 )
-# login_button.find_element(By.XPATH, '//*[@id="loginContainer"]/div/div/div[1]/div[4]/div[2]').click()
 
 time.sleep(2)
-
-# ir para nova janela
-# nova_janela = driver.window_handles[1]  # assume-se que a nova janela é a segunda na lista de identificadores de janelas
-# driver.switch_to.window(nova_janela)
-
-# time.sleep(6)
-# driver.delete_all_cookies() # limpa os cookies
-
-# driver.find_element(By.XPATH, '//*[@id="identifierId"]').send_keys(email)
-# driver.find_element(By.XPATH, '//*[@id="identifierNext"]/div/button').click()
 
 # logar com email
 login_button.find_element(
@@ -105,56 +93,51 @@ time.sleep(5)
 iframe = driver.find_element(By.TAG_NAME, "iframe")
 driver.switch_to.frame(iframe)
 
-# funcao para portar varias vezes
-video_input = driver.find_element(By.CSS_SELECTOR, "input[type='file']")
-video_input.send_keys(
-    path_abs(f"video_processado/{video_path[1]}")
-)  # tem que ser o caminho absoluto
+# funcao para postar todos os videos cortados
+for video_p in video_path:
+    video_input = driver.find_element(By.CSS_SELECTOR, "input[type='file']")
+    video_input.send_keys(
+        path_abs(f"video_processado/{video_p}")
+    )  # tem que ser o caminho absoluto
 
-time.sleep(5)
+    time.sleep(8)  # tempo de carregar o video
 
-# driver.find_element(
-#     By.XPATH,
-#     '//*[@id="tux-portal-container"]/div[2]/div/div/div/div/div[2]/div[2]/div[2]/button[2]',
-# ).click()
-# time.sleep(2)
+    # Limpando a legenda
+    driver.find_element(
+        By.XPATH,
+        '//*[@id="root"]/div/div/div/div[2]/div[2]/div[2]/div[1]/div/div[1]/div[2]/div/div/div/div/div/div',
+    ).clear()
+    time.sleep(2)
 
-# escrever a legenda
-time.sleep(5)
-driver.find_element(
-    By.XPATH,
-    '//*[@id="root"]/div/div/div/div[2]/div[2]/div[2]/div[1]/div/div[1]/div[2]/div/div/div/div/div/div',
-).clear()
-time.sleep(2)
-driver.find_element(
-    By.XPATH,
-    '//*[@id="root"]/div/div/div/div[2]/div[2]/div[2]/div[1]/div/div[1]/div[2]/div/div/div/div/div/div',
-).send_keys(caption)
-time.sleep(2)
+    # escrever a legenda
 
-# publicar video
-driver.find_element(
-    By.XPATH, '//*[@id="root"]/div/div/div/div[2]/div[2]/div[2]/div[8]/div[2]/button'
-).click()
-time.sleep(10)
-print("Video Publicado com sucesso!")
+    driver.find_element(
+        By.XPATH,
+        '//*[@id="root"]/div/div/div/div[2]/div[2]/div[2]/div[1]/div/div[1]/div[2]/div/div/div/div/div/div',
+    ).send_keys(caption)
+    time.sleep(2)
 
-# ele da a opcoes de carregar mais videos, implementar isso
-# ver se a lista de videos e maior que 1
+    # publicar video
+    driver.find_element(
+        By.XPATH,
+        '//*[@id="root"]/div/div/div/div[2]/div[2]/div[2]/div[8]/div[2]/button',
+    ).click()
+    time.sleep(12)  # aumentar temp0
+    print("Video Publicado com sucesso!")
 
-if len(video_path) < 2:
-    driver.quit()
-    print("Saindo....")
-
-# carregar outro video
-# driver.find_element(
-#     By.XPATH,
-#     '//*[@id="root"]/div/div/div/div[2]/div[2]/div[2]/div[9]/div/div[2]/div[1]',
-# ).click()
+    # Clicando em carregar mais videos
+    # Colocar tag para clicar so quando carregar
+    driver.find_element(
+        By.XPATH,
+        '//*[@id="root"]/div/div/div/div[2]/div[2]/div[2]/div[9]/div/div[2]/div[1]',
+    ).click()
+    time.sleep(2)
 
 
-# clicar em gerenciar suas publicacoes
-# driver.find_element(
-#     By.XPATH,
-#     '//*[@id="root"]/div/div/div/div[2]/div[2]/div[2]/div[9]/div/div[2]/div[2]',
-# ).click()
+driver.quit()
+
+# # clicar em gerenciar suas publicacoes
+# # driver.find_element(
+# #     By.XPATH,
+# #     '//*[@id="root"]/div/div/div/div[2]/div[2]/div[2]/div[9]/div/div[2]/div[2]',
+# # ).click()
